@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Free Web tutorials">
+  <meta name="keywords" content="HTML,CSS,XML,JavaScript">
+  <meta name="author" content="John Doe">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container">
+			
+			
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="./studentList.html">Home</a></li>
+					<li><a href="./createStudent.html">Create Student</a></li>
+				</ul>
+			</div>
+			
+		</div>
+	</nav>
+	
+	
+<div class="container">
+            
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Age</th>
+        <th>Course</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="studentTbl">
+      
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+		jQuery.support.cors = true;
+		 
+		$.ajax({ url: "http://localhost:8888/api/getAllStudents",
+			  type:"GET",
+			  dataType: 'JSON',
+	          success: function(data){
+	        	  
+	  			$.each(data, function (index, student){
+	  				debugger
+	  		        var newOption = '<tr><td>'+student.name+'</td><td>'+student.age+'</td><td>'+student.course+'</td><td colspan="2"><button  id='+student.id+' class="btn update btn-success">Update</button><button id='+student.id+' class="btn  delete btn-success">Delete</button></td></tr>';
+	  				 $('#studentTbl').append(newOption);
+	  		    });
+	  			
+	  		},
+	  		error: function(jqXHR, textStatus, errorThrown){
+	  			alert('addStudent error: ' + textStatus+"==="+errorThrown);
+	  		},
+	  		complete : function(e) {
+				console.log("DONE");
+			}
+		});
+		
+		 $(document).on("click",".update",function() {
+			window.location.href="updateStudent.html?id="+$(this).attr('id');
+		})
+		
+		
+		 $(document).on("click",".delete",function() {
+			 $.ajax({ url: "http://localhost:8888/api/student/"+$(this).attr('id'),
+				  type:"DELETE",
+				  dataType: 'JSON',
+		          success: function(data){
+		           alert("deleted");
+		           window.location.href = "studentList.html"
+		  		},
+		  		error: function(jqXHR, textStatus, errorThrown){
+		  			alert('addStudent error: ' + textStatus+"==="+errorThrown);
+		  		},
+		  		complete : function(e) {
+					console.log("DONE");
+				}
+			});
+		})
+		
+	})
+ </script>
+</body>
+</html>
